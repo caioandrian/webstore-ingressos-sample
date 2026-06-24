@@ -1,5 +1,22 @@
 import { Link } from 'react-router-dom';
 
+const scrollTop = () => window.scrollTo({ top: 0, behavior: 'instant' });
+
+function NavLink({ to, children, id, dataCy, state }) {
+  return (
+    <Link
+      to={to}
+      state={state}
+      id={id}
+      data-cy={dataCy}
+      onClick={scrollTop}
+      className="text-gray-400 hover:text-purple-300 text-sm transition-colors"
+    >
+      {children}
+    </Link>
+  );
+}
+
 export default function Footer() {
   return (
     <footer id="footer" data-cy="footer" className="bg-[#080810] border-t border-purple-900/30 mt-auto">
@@ -35,7 +52,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Links */}
+          {/* Navegação */}
           <div>
             <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Navegação</h3>
             <ul className="space-y-2">
@@ -47,12 +64,7 @@ export default function Footer() {
                 { to: '/contato', label: 'Contato' },
               ].map((item) => (
                 <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    className="text-gray-400 hover:text-purple-300 text-sm transition-colors"
-                  >
-                    {item.label}
-                  </Link>
+                  <NavLink to={item.to}>{item.label}</NavLink>
                 </li>
               ))}
             </ul>
@@ -64,18 +76,13 @@ export default function Footer() {
             <ul className="space-y-2">
               {['Rock', 'Sertanejo', 'Eletrônica', 'Pagode', 'Forró', 'MPB'].map((cat) => (
                 <li key={cat}>
-                  <Link
-                    to={`/eventos?categoria=${cat.toLowerCase()}`}
-                    className="text-gray-400 hover:text-purple-300 text-sm transition-colors"
-                  >
-                    {cat}
-                  </Link>
+                  <NavLink to={`/eventos?categoria=${cat.toLowerCase()}`}>{cat}</NavLink>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Suporte */}
+          {/* Suporte + Playground */}
           <div>
             <h3 className="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Suporte</h3>
             <ul className="space-y-2">
@@ -103,6 +110,8 @@ export default function Footer() {
                   id="footer-automacao-link"
                   data-cy="footer-automacao-link"
                   to="/automacao"
+                  state={{ anchor: 'selectors-title' }}
+                  onClick={scrollTop}
                   className="text-purple-400 hover:text-purple-300 text-sm transition-colors font-medium"
                 >
                   Referência de Seletores
@@ -113,7 +122,8 @@ export default function Footer() {
                   id="footer-reset-link"
                   data-cy="footer-reset-link"
                   to="/automacao"
-                  state={{ scrollToReset: true }}
+                  state={{ anchor: 'reset-state-card' }}
+                  onClick={scrollTop}
                   className="text-purple-400 hover:text-purple-300 text-sm transition-colors font-medium"
                 >
                   Resetar Estado

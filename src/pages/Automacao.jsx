@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const SELECTORS = [
   {
@@ -361,6 +362,16 @@ function SectionAccordion({ section }) {
 export default function Automacao() {
   const [resetStatus, setResetStatus] = useState(null);
   const [search, setSearch] = useState('');
+  const location = useLocation();
+
+  useEffect(() => {
+    const anchor = location.state?.anchor;
+    if (!anchor) return;
+    const el = document.getElementById(anchor);
+    if (el) {
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    }
+  }, [location.key]);
 
   const totalSelectors = SELECTORS.reduce((s, sec) => s + sec.items.length, 0);
 
