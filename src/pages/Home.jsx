@@ -68,9 +68,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Decorative orbs */}
-        <div className="absolute top-20 -left-20 w-72 h-72 bg-purple-700/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 -right-20 w-96 h-96 bg-pink-700/15 rounded-full blur-3xl pointer-events-none" />
+        {/* Decorative orbs — clipped to section so they don't cause horizontal scroll */}
+        <div className="absolute top-20 left-0 w-64 h-64 bg-purple-700/20 rounded-full blur-3xl pointer-events-none -translate-x-1/2" />
+        <div className="absolute bottom-10 right-0 w-80 h-80 bg-pink-700/15 rounded-full blur-3xl pointer-events-none translate-x-1/2" />
       </section>
 
       {/* Featured Events */}
