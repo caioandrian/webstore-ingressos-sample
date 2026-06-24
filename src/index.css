@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #7c3aed;
+  --color-brand-secondary: #db2777;
+  --color-brand-dark: #1e1b4b;
+  --color-brand-light: #f5f3ff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #0f0f1a;
+  color: #f1f0f7;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #7c3aed 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(180deg, rgba(124,58,237,0.15) 0%, rgba(30,27,75,0.95) 100%);
+}
+
+.ticket-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(124,58,237,0.2) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.ticket-stub {
+  position: relative;
+}
+.ticket-stub::before,
+.ticket-stub::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #0f0f1a;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ticket-stub::before { left: -12px; }
+.ticket-stub::after { right: -12px; }
+
+input, select, textarea {
+  color-scheme: dark;
+}
