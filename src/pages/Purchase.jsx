@@ -627,37 +627,54 @@ function OrderSummary({ event, ticketSelection, selectedAddons }) {
   );
 }
 
-// ─── Login Required Gate ─────────────────────────────────────────────────────
-function LoginGate({ eventId, onContinue }) {
+// ─── Login Required Gate (modal overlay) ─────────────────────────────────────
+function LoginGate({ eventId, onClose }) {
   const navigate = useNavigate();
   return (
     <div
-      id="login-gate"
-      data-cy="login-gate"
-      className="bg-[#13131f] border border-purple-700/50 rounded-2xl p-8 text-center"
+      id="login-gate-overlay"
+      data-cy="login-gate-overlay"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="text-5xl mb-4">🔐</div>
-      <h2 className="text-white text-xl font-black mb-2">Login necessário</h2>
-      <p className="text-gray-400 mb-6">
-        Para finalizar sua compra, faça login ou crie uma conta gratuita. Sua seleção será mantida.
-      </p>
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+      <div
+        id="login-gate"
+        data-cy="login-gate"
+        className="relative bg-[#13131f] border border-purple-700/50 rounded-2xl p-8 text-center w-full max-w-md shadow-2xl shadow-purple-900/40"
+      >
         <button
-          id="gate-login-btn"
-          data-cy="gate-login-btn"
-          onClick={() => navigate(`/login?redirect=/comprar/${eventId}`)}
-          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-8 py-3 rounded-xl hover:scale-105 transition-all"
+          id="login-gate-close"
+          data-cy="login-gate-close"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-white text-2xl leading-none transition-colors"
+          aria-label="Fechar"
         >
-          Entrar na minha conta
+          ×
         </button>
-        <button
-          id="gate-register-btn"
-          data-cy="gate-register-btn"
-          onClick={() => navigate(`/login?redirect=/comprar/${eventId}&tab=register`)}
-          className="bg-white/10 border border-white/20 text-white font-semibold px-8 py-3 rounded-xl hover:bg-white/20 transition-all"
-        >
-          Criar conta grátis
-        </button>
+
+        <div className="text-5xl mb-4">🔐</div>
+        <h2 className="text-white text-xl font-black mb-2">Login necessário</h2>
+        <p className="text-gray-400 mb-6">
+          Para finalizar sua compra, faça login ou crie uma conta gratuita. Sua seleção será mantida.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button
+            id="gate-login-btn"
+            data-cy="gate-login-btn"
+            onClick={() => navigate(`/login?redirect=/comprar/${eventId}`)}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-8 py-3 rounded-xl hover:scale-105 transition-all"
+          >
+            Entrar na minha conta
+          </button>
+          <button
+            id="gate-register-btn"
+            data-cy="gate-register-btn"
+            onClick={() => navigate(`/login?redirect=/comprar/${eventId}&tab=register`)}
+            className="bg-white/10 border border-white/20 text-white font-semibold px-8 py-3 rounded-xl hover:bg-white/20 transition-all"
+          >
+            Criar conta grátis
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -827,6 +844,10 @@ export default function Purchase() {
   const total = calcTotal();
 
   return (
+    <>
+    {showLoginGate && (
+      <LoginGate eventId={eventId} onClose={() => setShowLoginGate(false)} />
+    )}
     <div id="purchase-page" data-cy="purchase-page" className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       {/* Event header */}
       <div
@@ -850,11 +871,6 @@ export default function Purchase() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
         <div className="lg:col-span-2">
-          {showLoginGate && (
-            <div className="mb-6">
-              <LoginGate eventId={eventId} onContinue={() => setShowLoginGate(false)} />
-            </div>
-          )}
           <div id="purchase-step-content" data-cy="purchase-step-content" className="bg-[#13131f] border border-purple-900/30 rounded-2xl p-6 md:p-8">
             {step === 1 && (
               <StepTickets event={event} selection={ticketSelection} onChange={handleTicketChange} />
@@ -925,5 +941,6 @@ export default function Purchase() {
         )}
       </div>
     </div>
+    </>
   );
 }

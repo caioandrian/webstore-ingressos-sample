@@ -26,7 +26,7 @@ function Toast({ message, type }) {
     ? 'bg-green-900/30 border-green-700/40 text-green-300'
     : 'bg-red-900/30 border-red-700/40 text-red-400';
   return (
-    <div data-cy="toast" className={`fixed top-20 right-4 z-50 border rounded-xl px-5 py-3 text-sm font-medium shadow-xl ${colors} animate-bounce`}>
+    <div id="toast-notification" data-cy="toast" className={`fixed top-20 right-4 z-50 border rounded-xl px-5 py-3 text-sm font-medium shadow-xl ${colors} animate-bounce`}>
       {type === 'success' ? '✓ ' : '✗ '}{message}
     </div>
   );
@@ -259,7 +259,7 @@ function Security({ changePassword, showToast }) {
               }`}
             />
             {errors[f.key] && (
-              <p data-cy={`error-${f.id}`} className="text-red-400 text-xs mt-1">{errors[f.key]}</p>
+              <p id={`error-${f.id}`} data-cy={`error-${f.id}`} className="text-red-400 text-xs mt-1">{errors[f.key]}</p>
             )}
           </div>
         ))}
@@ -330,6 +330,7 @@ function Orders({ userId, navigate }) {
                     <p className="text-gray-300 text-xs">📅 {order.event?.dateFormatted}</p>
                   </div>
                   <span
+                    id={`order-status-${order.id}`}
                     data-cy="order-status-badge"
                     className={`text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 ${
                       order.status === 'confirmed'
@@ -348,7 +349,7 @@ function Orders({ userId, navigate }) {
                 <div className="flex gap-5">
                   <div>
                     <p className="text-gray-500 text-xs">Pedido</p>
-                    <p data-cy="order-id-label" className="text-purple-300 font-mono text-sm font-bold">{order.id}</p>
+                    <p id={`order-id-label-${order.id}`} data-cy="order-id-label" className="text-purple-300 font-mono text-sm font-bold">{order.id}</p>
                   </div>
                   <div>
                     <p className="text-gray-500 text-xs">Ingressos</p>
@@ -371,11 +372,12 @@ function Orders({ userId, navigate }) {
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <p className="text-gray-500 text-xs">Total pago</p>
-                    <p data-cy="order-total-label" className="text-green-400 font-bold text-lg">
+                    <p id={`order-total-${order.id}`} data-cy="order-total-label" className="text-green-400 font-bold text-lg">
                       R$ {order.total?.toFixed(2).replace('.', ',')}
                     </p>
                   </div>
                   <button
+                    id={`toggle-order-${order.id}`}
                     data-cy="toggle-order-details"
                     onClick={() => setExpanded(isOpen ? null : order.id)}
                     className="p-2 text-gray-400 hover:text-white transition-colors"
@@ -388,7 +390,7 @@ function Orders({ userId, navigate }) {
               </div>
 
               {isOpen && (
-                <div data-cy="order-details-expanded" className="border-t border-purple-900/20 pt-4 mt-2 space-y-4">
+                <div id={`order-details-${order.id}`} data-cy="order-details-expanded" className="border-t border-purple-900/20 pt-4 mt-2 space-y-4">
                   {/* Ticket breakdown */}
                   <div>
                     <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Ingressos</p>
