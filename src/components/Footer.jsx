@@ -43,6 +43,7 @@ export default function Footer() {
                 { to: '/', label: 'Início' },
                 { to: '/eventos', label: 'Todos os Eventos' },
                 { to: '/meus-ingressos', label: 'Meus Ingressos' },
+                { to: '/perfil', label: 'Meu Perfil' },
                 { to: '/contato', label: 'Contato' },
               ].map((item) => (
                 <li key={item.to}>

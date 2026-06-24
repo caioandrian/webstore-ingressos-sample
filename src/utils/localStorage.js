@@ -1,20 +1,21 @@
 const KEYS = {
   ORDERS: 'showtickets_orders',
   CART: 'showtickets_cart',
-  USER: 'showtickets_user',
 };
 
 export const storage = {
-  getOrders: () => {
+  getOrders: (userId = null) => {
     try {
-      return JSON.parse(localStorage.getItem(KEYS.ORDERS) || '[]');
+      const all = JSON.parse(localStorage.getItem(KEYS.ORDERS) || '[]');
+      if (userId) return all.filter((o) => o.userId === userId);
+      return all;
     } catch {
       return [];
     }
   },
 
   saveOrder: (order) => {
-    const orders = storage.getOrders();
+    const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS) || '[]');
     const newOrder = {
       ...order,
       id: `ST-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`,
@@ -33,23 +34,6 @@ export const storage = {
     }
   },
 
-  saveCart: (cart) => {
-    localStorage.setItem(KEYS.CART, JSON.stringify(cart));
-  },
-
-  clearCart: () => {
-    localStorage.removeItem(KEYS.CART);
-  },
-
-  getUser: () => {
-    try {
-      return JSON.parse(localStorage.getItem(KEYS.USER) || 'null');
-    } catch {
-      return null;
-    }
-  },
-
-  saveUser: (user) => {
-    localStorage.setItem(KEYS.USER, JSON.stringify(user));
-  },
+  saveCart: (cart) => localStorage.setItem(KEYS.CART, JSON.stringify(cart)),
+  clearCart: () => localStorage.removeItem(KEYS.CART),
 };

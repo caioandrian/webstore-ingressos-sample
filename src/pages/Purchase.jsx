@@ -4,6 +4,7 @@ import { getEventById } from '../data/mockEvents';
 import StepIndicator, { STEPS } from '../components/StepIndicator';
 import { processPayment, formatCPF, formatCard, formatExpiry, formatPhone, generatePixCode } from '../utils/mockPayment';
 import { storage } from '../utils/localStorage';
+import { useAuth } from '../contexts/AuthContext';
 
 // ─── Step 1: Ticket selection ─────────────────────────────────────────────────
 function StepTickets({ event, selection, onChange }) {
@@ -626,10 +627,47 @@ function OrderSummary({ event, ticketSelection, selectedAddons }) {
   );
 }
 
+// ─── Login Required Gate ─────────────────────────────────────────────────────
+function LoginGate({ eventId, onContinue }) {
+  const navigate = useNavigate();
+  return (
+    <div
+      id="login-gate"
+      data-cy="login-gate"
+      className="bg-[#13131f] border border-purple-700/50 rounded-2xl p-8 text-center"
+    >
+      <div className="text-5xl mb-4">🔐</div>
+      <h2 className="text-white text-xl font-black mb-2">Login necessário</h2>
+      <p className="text-gray-400 mb-6">
+        Para finalizar sua compra, faça login ou crie uma conta gratuita. Sua seleção será mantida.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <button
+          id="gate-login-btn"
+          data-cy="gate-login-btn"
+          onClick={() => navigate(`/login?redirect=/comprar/${eventId}`)}
+          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-8 py-3 rounded-xl hover:scale-105 transition-all"
+        >
+          Entrar na minha conta
+        </button>
+        <button
+          id="gate-register-btn"
+          data-cy="gate-register-btn"
+          onClick={() => navigate(`/login?redirect=/comprar/${eventId}&tab=register`)}
+          className="bg-white/10 border border-white/20 text-white font-semibold px-8 py-3 rounded-xl hover:bg-white/20 transition-all"
+        >
+          Criar conta grátis
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Purchase Page ───────────────────────────────────────────────────────
 export default function Purchase() {
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const event = getEventById(eventId);
 
   const [step, setStep] = useState(1);
@@ -642,6 +680,22 @@ export default function Purchase() {
   const [processing, setProcessing] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
   const [paymentError, setPaymentError] = useState(null);
+  const [showLoginGate, setShowLoginGate] = useState(false);
+
+  // Pre-fill user data from profile when user logs in
+  useEffect(() => {
+    if (user && Object.keys(userData).length === 0) {
+      setUserData({
+        name: user.name || '',
+        email: user.email || '',
+        confirmEmail: user.email || '',
+        cpf: user.cpf || '',
+        phone: user.phone || '',
+        birthdate: user.birthdate || '',
+      });
+    }
+    if (user && showLoginGate) setShowLoginGate(false);
+  }, [user]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -726,8 +780,11 @@ export default function Purchase() {
   const handleNext = async () => {
     if (step === 1) {
       if (totalTickets === 0) return;
+      // Require login before proceeding past ticket selection
+      if (!user) { setShowLoginGate(true); return; }
       setStep(2);
     } else if (step === 2) {
+      if (!user) { setShowLoginGate(true); return; }
       setStep(3);
     } else if (step === 3) {
       const errs = validateUserData();
@@ -744,6 +801,7 @@ export default function Purchase() {
 
       if (result.success) {
         const order = storage.saveOrder({
+          userId: user?.id,
           event: { id: event.id, title: event.title, dateFormatted: event.dateFormatted, venue: event.venue },
           tickets: ticketSelection,
           addons: selectedAddons,
@@ -792,6 +850,11 @@ export default function Purchase() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
         <div className="lg:col-span-2">
+          {showLoginGate && (
+            <div className="mb-6">
+              <LoginGate eventId={eventId} onContinue={() => setShowLoginGate(false)} />
+            </div>
+          )}
           <div id="purchase-step-content" data-cy="purchase-step-content" className="bg-[#13131f] border border-purple-900/30 rounded-2xl p-6 md:p-8">
             {step === 1 && (
               <StepTickets event={event} selection={ticketSelection} onChange={handleTicketChange} />
