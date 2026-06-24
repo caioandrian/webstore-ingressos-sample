@@ -91,8 +91,8 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featured.slice(0, 3).map((event, i) => (
-            <EventCard key={event.id} event={event} featured={i === 0} />
+          {featured.slice(0, 3).map((event) => (
+            <EventCard key={event.id} event={event} />
           ))}
         </div>
       </section>
