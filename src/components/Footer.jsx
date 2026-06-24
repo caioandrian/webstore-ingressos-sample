@@ -93,6 +93,33 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
+
+            <h3 className="text-white font-semibold text-sm mt-6 mb-3 uppercase tracking-wider flex items-center gap-2">
+              <span>🤖</span> Playground Automação
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  id="footer-automacao-link"
+                  data-cy="footer-automacao-link"
+                  to="/automacao"
+                  className="text-purple-400 hover:text-purple-300 text-sm transition-colors font-medium"
+                >
+                  Referência de Seletores
+                </Link>
+              </li>
+              <li>
+                <Link
+                  id="footer-reset-link"
+                  data-cy="footer-reset-link"
+                  to="/automacao"
+                  state={{ scrollToReset: true }}
+                  className="text-purple-400 hover:text-purple-300 text-sm transition-colors font-medium"
+                >
+                  Resetar Estado
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
